@@ -6,6 +6,12 @@ import {
   SellingPlanInputSchema,
 } from "./shopify/admin.2024-07.graphql.ts";
 
+export const measurementsSchema = z.object({
+  lengthInches: z.coerce.number().positive(),
+  widthInches: z.coerce.number().positive(),
+  heightInches: z.coerce.number().positive(),
+});
+
 export const successBodySchema = z.object({
   success: z.literal(true),
   data: z.object({
@@ -33,9 +39,11 @@ export const successBodySchema = z.object({
       ),
     /**
      * The products/variants which receive this plan.
-     * Note shopify calls these 'ID', however it expects GID strings
+     * Note shopify calls these 'ID', however it expects GID strings.
+     * If not provided, Offr will automatically associate
+     * the product and variants received.
      */
-    resources: SellingPlanGroupResourceInputSchema(),
+    resources: SellingPlanGroupResourceInputSchema().optional(),
     /**
      * an ISO 8601 date string representing the time the plan is activated
      * (ex: set it 1 hour the future to impose a 1-hour cool-down period)

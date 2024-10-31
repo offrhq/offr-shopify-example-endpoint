@@ -1,4 +1,5 @@
-import { exampleSuccess } from "./example.ts";
+import { getExample } from "./example.ts";
+import { measurementsSchema } from "./schema.ts";
 
 Deno.serve(async (req) => {
   try {
@@ -19,8 +20,13 @@ const successHandler = async (req: Request) => {
   // log for development; probably remove for production
   console.log(req, formData);
 
-  // example response below
-  return jsonResponse(exampleSuccess);
+  // process the calculation
+  const measurements = measurementsSchema.parse({
+    lengthInches: formData.get("lengthInches"),
+    widthInches: formData.get("widthInches"),
+    heightInches: formData.get("heightInches"),
+  });
+  return jsonResponse(getExample(measurements));
 };
 
 /** returns a standardized error json response */
