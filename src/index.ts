@@ -17,16 +17,18 @@ const successHandler = async (req: Request) => {
    */
   const formData = await req.formData();
 
-  // log for development; probably remove for production
-  console.log(req, formData);
-
   // process the calculation
   const measurements = measurementsSchema.parse({
     lengthInches: formData.get("lengthInches"),
     widthInches: formData.get("widthInches"),
     heightInches: formData.get("heightInches"),
   });
-  return jsonResponse(getExample(measurements));
+  const res = getExample(measurements);
+
+  // log for development; probably remove for production
+  console.log({ req, formData, res });
+
+  return jsonResponse(res);
 };
 
 /** returns a standardized error json response */
