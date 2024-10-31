@@ -22,13 +22,13 @@ export const getExample = (measurements: Measurements) => {
         fixed: {
           adjustmentType: "PRICE",
           adjustmentValue: {
-            fixedValue: `${
+            fixedValue: `${(
               20.33 +
               measurements.lengthInches *
                 measurements.widthInches *
                 measurements.heightInches *
                 0.02
-            }`,
+            ).toFixed(2)}`,
           },
         },
       },
@@ -52,13 +52,13 @@ export const getExample = (measurements: Measurements) => {
         fixed: {
           adjustmentType: "PRICE",
           adjustmentValue: {
-            fixedValue: `${
+            fixedValue: `${(
               25.33 +
               measurements.lengthInches *
                 measurements.widthInches *
                 measurements.heightInches *
                 0.021
-            }`,
+            ).toFixed(2)}`,
           },
         },
       },
