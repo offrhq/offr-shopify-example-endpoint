@@ -1,8 +1,10 @@
+import { exampleSuccess } from "./example.ts";
+
 Deno.serve(async (req) => {
   try {
     return await successHandler(req);
   } catch (error) {
-    return errorHandler(error as Json);
+    return errorHandler(error);
   }
 });
 
@@ -13,26 +15,29 @@ const successHandler = async (req: Request) => {
    * https://developer.mozilla.org/en-US/docs/Web/API/FormData
    */
   const formData = await req.formData();
+
+  // log for development; probably remove for production
   console.log(req, formData);
 
-  return jsonResponse({ success: true, data: { example: "hello world" } });
+  // example response below
+  return jsonResponse(exampleSuccess);
 };
 
 /** returns a standardized error json response */
-const errorHandler = (error: Json) => {
+// deno-lint-ignore no-explicit-any
+const errorHandler = (error: any) => {
   console.warn(error);
 
   return jsonResponse({
     success: false,
     publicMessage: "Oops. We couldn't process your request.",
-    privateErrors: (error as Json) ?? "",
+    privateErrors: error ?? "",
   });
 };
 
-type Json = string | number | boolean | { [x: string]: Json } | Array<Json>;
-
 /** simple response JSON wrapper */
-const jsonResponse = (json: Json) => {
+// deno-lint-ignore no-explicit-any
+const jsonResponse = (json: any) => {
   return new Response(JSON.stringify(json), {
     headers: { "Content-Type": "application/json" },
   });
