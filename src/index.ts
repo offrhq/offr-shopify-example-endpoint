@@ -25,8 +25,10 @@ const successHandler = async (req: Request) => {
   });
   const res = getExample(measurements);
 
-  // log for development; probably remove for production
-  console.dir({ req, formData, res }, { depth: Infinity });
+  // log for development; probably remove these for production
+  console.dir(req, { depth: Infinity });
+  console.dir(formData, { depth: Infinity });
+  console.dir(res, { depth: Infinity });
 
   return jsonResponse(res);
 };
