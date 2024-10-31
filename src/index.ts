@@ -1,12 +1,39 @@
-Deno.serve({ path: "f7b9506c-a635-4aa2-81b2-939d4b7debd7" }, async (req) => {
+Deno.serve(async (req) => {
   try {
-    const formData = await req.formData();
-    console.log(req, formData);
+    return await successHandler(req);
   } catch (error) {
-    console.warn(error);
+    return errorHandler(error as Json);
   }
+});
 
-  return new Response(JSON.stringify({ example: "hello world" }), {
+/** returns the success json response */
+const successHandler = async (req: Request) => {
+  /**
+   * the shopper input
+   * https://developer.mozilla.org/en-US/docs/Web/API/FormData
+   */
+  const formData = await req.formData();
+  console.log(req, formData);
+
+  return jsonResponse({ success: true, data: { example: "hello world" } });
+};
+
+/** returns a standardized error json response */
+const errorHandler = (error: Json) => {
+  console.warn(error);
+
+  return jsonResponse({
+    success: false,
+    publicMessage: "Oops. We couldn't process your request.",
+    privateErrors: (error as Json) ?? "",
+  });
+};
+
+type Json = string | number | boolean | { [x: string]: Json } | Array<Json>;
+
+/** simple response JSON wrapper */
+const jsonResponse = (json: Json) => {
+  return new Response(JSON.stringify(json), {
     headers: { "Content-Type": "application/json" },
   });
-});
+};
