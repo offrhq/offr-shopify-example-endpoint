@@ -77,8 +77,10 @@ export const getExample = (measurements: Measurements) => {
         new Date().valueOf() + 3 * 60 * 60 * 1000 // 3 hours
       ).toISOString(),
       customAttributes: [
-        ["Dimensions", "12x24x33"],
-        ["Material", "Glass"],
+        [
+          "Inches (LxWxH)",
+          `${measurements.lengthInches}x${measurements.widthInches}x${measurements.heightInches}`,
+        ],
       ],
     },
   } satisfies z.infer<typeof successBodySchema>;
