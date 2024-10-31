@@ -76,7 +76,6 @@ export const getExample = (measurements: Measurements) => {
       validUntil: new Date(
         new Date().valueOf() + 3 * 60 * 60 * 1000 // 3 hours
       ).toISOString(),
-      resources: { productIds: [], productVariantIds: [] },
       customAttributes: [
         ["Dimensions", "12x24x33"],
         ["Material", "Glass"],
