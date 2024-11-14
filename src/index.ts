@@ -1,5 +1,5 @@
 import { getExample } from "./example.ts";
-import { measurementsSchema } from "./schema.ts";
+import { measurementsSchema, type ErrorBodySchema } from "./schema.ts";
 
 Deno.serve(async (req) => {
   try {
@@ -41,8 +41,8 @@ const errorHandler = (error: any) => {
   return jsonResponse({
     success: false,
     publicMessage: "Oops. We couldn't process your request.",
-    privateErrors: error ?? "",
-  });
+    privateError: error ?? "",
+  } satisfies ErrorBodySchema);
 };
 
 /** simple response JSON wrapper */

@@ -6,12 +6,24 @@ import {
   SellingPlanInputSchema,
 } from "./shopify/admin.2024-07.graphql.ts";
 
+/**
+ * We use [Zod](https://zod.dev/) to enforce a schema of the data we expect.
+ * In our example, we are calculating pricing of an "example fish tank".
+ *
+ * We could choose impose additional restrictions.
+ * For example, we could:
+ * * restrict numbers to increments of .125
+ * * put a max length for each side
+ * * put a total volume limitation
+ * * etc.
+ */
 export const measurementsSchema = z.object({
   lengthInches: z.coerce.number().positive(),
   widthInches: z.coerce.number().positive(),
   heightInches: z.coerce.number().positive(),
 });
 
+/** To succeed, Offr requires our response to conform to this schema */
 export const successBodySchema = z.object({
   success: z.literal(true),
   data: z.object({
@@ -75,3 +87,22 @@ export const successBodySchema = z.object({
     customAttributes: z.array(z.tuple([z.string(), z.string()])),
   }),
 });
+
+/**
+ * To provide helpful error messages to the shopper,
+ * Offr requires our error response to conform to this schema.
+ *
+ * Without this, the shopper will be presented with a generic error.
+ */
+export const errorBodySchema = z.object({
+  success: z.literal(false),
+  /** The message shown to the shopper */
+  publicMessage: z.string(),
+  /**
+   * Debug information which will be stored in `Shopify Admin / Content (Metaobjects) / Log (Offr)`.
+   * This data is not conveyed to the client browser;
+   * it is only available through your Shopify admin
+   */
+  privateError: z.any(),
+});
+export type ErrorBodySchema = z.infer<typeof errorBodySchema>;
