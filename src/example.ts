@@ -3,6 +3,7 @@ import { measurementsSchema, successBodySchema } from "./schema.ts";
 import type { SellingPlanInput } from "./shopify/admin.2024-07.graphql.ts";
 
 type Measurements = z.infer<typeof measurementsSchema>;
+type SuccessBody = z.infer<typeof successBodySchema>;
 
 export const getExample = (measurements: Measurements) => {
   const acrylicTank = {
@@ -64,24 +65,24 @@ export const getExample = (measurements: Measurements) => {
       },
     ],
   } satisfies SellingPlanInput;
-  return {
-    success: true,
-    data: {
-      sellingPlanGroupInput: {
-        sellingPlansToCreate: [acrylicTank, glassTank],
-        name: "Custom Sized Fish Tank",
-        options: ["Material"], // label for plan options
-      },
-      validFrom: new Date().toISOString(),
-      validUntil: new Date(
-        new Date().valueOf() + 3 * 60 * 60 * 1000 // 3 hours
-      ).toISOString(),
-      customAttributes: [
-        [
-          "Inches (LxWxH)",
-          `${measurements.lengthInches}x${measurements.widthInches}x${measurements.heightInches}`,
-        ],
-      ],
+
+  const data = {
+    sellingPlanGroupInput: {
+      sellingPlansToCreate: [acrylicTank, glassTank],
+      name: "Custom Sized Fish Tank",
+      options: ["Material"],
     },
-  } satisfies z.infer<typeof successBodySchema>;
+    validFrom: new Date().toISOString(),
+    validUntil: new Date(
+      new Date().valueOf() + 3 * 60 * 60 * 1000 // 3 hours
+    ).toISOString(),
+    customAttributes: [
+      [
+        "Inches (LxWxH)",
+        `${measurements.lengthInches}x${measurements.widthInches}x${measurements.heightInches}`,
+      ],
+    ],
+  } satisfies SuccessBody["data"];
+
+  return { success: true, data } satisfies SuccessBody;
 };

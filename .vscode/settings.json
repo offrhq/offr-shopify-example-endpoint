@@ -3,9 +3,11 @@
   "deno.unstable": true,
   "cSpell.words": [
     "codegen",
+    "Deno",
     "metafield",
     "metafields",
     "myshopify",
+    "Offr",
     "requestable"
   ]
 }

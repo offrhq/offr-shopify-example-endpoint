@@ -37,28 +37,38 @@ export const successBodySchema = z.object({
           sellingPlansToCreate: z.array(SellingPlanInputSchema()).min(1),
         })
       ),
+
     /**
-     * The products/variants which receive this plan.
-     * Note shopify calls these 'ID', however it expects GID strings.
+     * OPTIONAL: The products/variants which receive this plan.
      * If not provided, Offr will automatically associate
      * the product and variants received.
+     *
+     * Note Shopify calls these 'ID', however it expects GID strings.
      */
     resources: SellingPlanGroupResourceInputSchema().optional(),
+
     /**
-     * an ISO 8601 date string representing the time the plan is activated
-     * (ex: set it 1 hour the future to impose a 1-hour cool-down period)
-     * @example
-     * `2030-10-11T14:30:00Z`
+     * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
+     * which represents the activation time the plan(s)
+     *
+     * for example:
+     * set it to a future time to schedule public ticket sales
      */
     validFrom: z.string().datetime(),
+
     /**
-     * an ISO 8601 date string representing the time the plan is activated
-     * (ex: set it 3-h in the future to require checkout within 3 hours)     * @example
-     * `2030-10-11T17:30:00Z`
+     * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
+     * which represents the deactivation time of the plan(s)
+     *
+     * for example:
+     * set it 3 hours in the future to require checkout within 3 hours
      */
     validUntil: z.string().datetime(),
+
     /**
-     * Array of key-value tuples to show in cart and order summary
+     * Array of key-value tuples to show in cart and order summary,
+     * such as to show shopper customizations.
+     *
      * @example
      * [["Dimensions","12x24x33"],["Material","Glass"]]
      */
