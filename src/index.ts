@@ -1,6 +1,10 @@
 import { getExample } from "./example.ts";
 import { measurementsSchema, type ErrorBodySchema } from "./schema.ts";
 
+/**
+ * This is the HTTP entry point.
+ * https://docs.deno.com/api/deno/~/Deno.serve
+ */
 Deno.serve(async (req) => {
   try {
     return await successHandler(req);
