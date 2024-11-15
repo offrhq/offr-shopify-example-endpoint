@@ -26,66 +26,69 @@ export const measurementsSchema = z.object({
 /** To succeed, Offr requires our response to conform to this schema */
 export const successBodySchema = z.object({
   success: z.literal(true),
-  data: z.object({
-    /**
-     * Same as Shopify `sellingPlanGroupInput`
-     * https://shopify.dev/docs/api/admin-graphql/2024-07/input-objects/SellingPlanGroupInput
-     *
-     * With additional restrictions:
-     * * no sellingPlansToDelete
-     * * no sellingPlansToUpdate
-     * * no appId
-     * * create at least one sellingPlan
-     */
-    sellingPlanGroupInput: SellingPlanGroupInputSchema()
-      .omit({
-        sellingPlansToDelete: true, // not allowed
-        sellingPlansToUpdate: true, // not allowed
-        appId: true, // not allowed
-      })
-      // at least one selling plan is required
-      .merge(
-        z.object({
-          sellingPlansToCreate: z.array(SellingPlanInputSchema()).min(1),
+  data: z
+    .object({
+      /**
+       * Same as Shopify `sellingPlanGroupInput`
+       * https://shopify.dev/docs/api/admin-graphql/2024-07/input-objects/SellingPlanGroupInput
+       *
+       * With additional restrictions:
+       * * no sellingPlansToDelete
+       * * no sellingPlansToUpdate
+       * * no appId
+       * * create at least one sellingPlan
+       */
+      sellingPlanGroupInput: SellingPlanGroupInputSchema()
+        .omit({
+          sellingPlansToDelete: true, // not allowed
+          sellingPlansToUpdate: true, // not allowed
+          appId: true, // not allowed
         })
-      ),
+        // at least one selling plan is required
+        .merge(
+          z.object({
+            sellingPlansToCreate: z.array(SellingPlanInputSchema()).min(1),
+          })
+        )
+        .strict(), // give an error when attempting to add other properties
 
-    /**
-     * OPTIONAL: The products/variants which receive this plan.
-     * If not provided, Offr will automatically associate
-     * the product and variants received.
-     *
-     * Note Shopify calls these 'ID', however it expects GID strings.
-     */
-    resources: SellingPlanGroupResourceInputSchema().optional(),
+      /**
+       * OPTIONAL: The products/variants which receive this plan.
+       * If not provided, Offr will automatically associate
+       * the product and variants received.
+       *
+       * Note Shopify calls these 'ID', however it expects GID strings.
+       */
+      resources: SellingPlanGroupResourceInputSchema().optional(),
 
-    /**
-     * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
-     * which represents the activation time the plan(s)
-     *
-     * for example:
-     * set it to a future time to schedule public ticket sales
-     */
-    validFrom: z.string().datetime(),
+      /**
+       * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
+       * which represents the activation time the plan(s)
+       *
+       * for example:
+       * set it to a future time to schedule public ticket sales
+       */
+      validFrom: z.string().datetime(),
 
-    /**
-     * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
-     * which represents the deactivation time of the plan(s)
-     *
-     * for example:
-     * set it 3 hours in the future to require checkout within 3 hours
-     */
-    validUntil: z.string().datetime(),
+      /**
+       * an ISO 8601 date string (ex: `2030-10-11T14:30:00Z`)
+       * which represents the deactivation time of the plan(s)
+       *
+       * for example:
+       * set it 3 hours in the future to require checkout within 3 hours
+       */
+      validUntil: z.string().datetime(),
 
-    /**
-     * Array of key-value tuples to show in cart and order summary,
-     * such as to show shopper customizations.
-     *
-     * @example
-     * [["Dimensions","12x24x33"],["Material","Glass"]]
-     */
-    customAttributes: z.array(z.tuple([z.string(), z.string()])),
-  }),
+      /**
+       * Array of key-value tuples to show in cart and order summary,
+       * such as to show shopper customizations.
+       *
+       * @example
+       * [["Dimensions","12x24x33"],["Material","Glass"]]
+       */
+      customAttributes: z.array(z.tuple([z.string(), z.string()])),
+    })
+    .strict(), // give an error when attempting to add other properties
 });
 
 /**
